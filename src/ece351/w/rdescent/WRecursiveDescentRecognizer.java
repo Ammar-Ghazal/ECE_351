@@ -60,7 +60,58 @@ public final class WRecursiveDescentRecognizer {
     }
 
     public void waveform() {
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+    // TODO: longer code snippet
+
+    // Inspect and consume the pin name of the waveform:
+    while (lexer.inspectID()){
+        lexer.consumeID();
+    }
+
+    // Inspect and consume : after the pin name, if not :, then it must be a space
+    if(lexer.inspect(":")){
+        lexer.consume(":");
+    }else{
+        // lexer.consume(" ");
+        // removed since lexer ignores whitespaces
+    }
+
+    // Inspect and consume the bits 0 & 1, and the ; terminating the waveform
+    while(!lexer.inspect(";")){
+        if(lexer.inspect("1", "0")){
+            lexer.consume("0", "1");
+        }else{
+            lexer.consume("0", "1");
+        }
+        
+        // filter for spaces: removed since lexer ignores whitespaces
+        // if(lexer.inspect(" ")){
+        //     lexer.consume(" ");
+        // }
+
+        // Broken code:
+        // if(lexer.inspect(" ")){
+        //     lexer.consume(" ");
+        // }else if(lexer.inspect("1", "0")){
+        //     lexer.consume("0", "1");
+        // }else{
+        //     lexer.consume("0", "1");
+        // }
+        // // Not sure why this breaks one reject test case: breaks [0]
+        // if(lexer.inspect("1")){
+        //     lexer.consume("1");
+        // }else if(lexer.inspect("0")){
+        //     lexer.consume("0");
+        // }else if(lexer.inspect(" ")){
+        //     lexer.consume(" ");
+        // }
+        // // filter for spaces:
+        // if(lexer.inspect(" ")){
+        //     lexer.consume(" ");
+        // }
+    }
+    
+    // Consume the ; once we've reached it (when while loop terminates)
+    lexer.consume(";");
+    // throw new ece351.util.Todo351Exception();
     }
 }

@@ -111,9 +111,24 @@ public final class Waveform implements Examinable {
 	
 	@Override
 	public String toString() {
-		// STUB: return "TODO"; // TODO: Waveform.toString()
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// STUB: return "TODO"; 
+		// TODO: Waveform.toString()
+		// TODO: short code snippet
+		String output = "";
+
+		//Start waveform construction:
+		// Step 1: add input pin name and ":"
+		output = name+":";
+
+		// Step 2: add all bits from bits (immutable list type)
+		for(String bitVal: bits){
+			output += bitVal;
+		}
+
+		// Step 3: add ; and return output string
+		return output += ";";
+
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	/**

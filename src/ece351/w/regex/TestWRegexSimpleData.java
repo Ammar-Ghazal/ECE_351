@@ -36,48 +36,65 @@ class TestWRegexSimpleData {
 	static {
 		// r1.wave: This regex is exactly the same as the input, so it accepts.
 		regexs.add("A: 0;\\s*");
+		// regexs.add("A: 0[?]*1;\\s*");
 
 		// r2.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to accept multiple input values, either 0 or 1.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// regexs.add("A:[ 0]?[ 1]?;\\s*");
+		regexs.add("A:[ ]?[0]?[ ]?[1]?;\\s*"); //spaces optional?
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 
 		// r3.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to allow whitespace between the last signal and the semi-colon.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// regexs.add("A:[ 0]?[ 1]?[ ]?;\\s*");
+		regexs.add("A:[ ]?[0]?[ ]?[1]?[ ]?;\\s*"); //spaces optional?
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 
 		// r4.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to allow multi-character pin names.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-
+		regexs.add("[AB][AB]?:[ ]?[0]?[ ]?[1]?[ ]?;\\s*"); //spaces optional?
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		
 		// r5.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to allow lower case in pin names.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-
+		regexs.add("[A-Za-z][A-Za-z]?:[ ]?[0]?[ ]?[1]?[ ]?;\\s*"); //spaces optional?
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		
 		// r6.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to allow multiple spaces between values.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		regexs.add("[ ]*[A-Za-z]*[ ]*:[ ]*[0]?[ ]*[1]?[ ]*;\\s*"); //spaces optional?
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 
 		// r7.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex for whitespace again.
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// No modification made
+		regexs.add("[ ]*[A-Za-z]*[ ]*:[ ]*[0]?[ ]*[1]?[ ]*;\\s*");
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 
 		// r8.wave
 		// Copy the regex from above and paste it here.
 		// Generalize the regex to allow multiple pins
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		regexs.add("[[\\s]*[ ]*[A-Za-z]+[ ]*:[ |1|0]*;[\\s]*]*"); // spaces optional?
+		regexs.add("[[\\s]*[ ]*[A-Za-z]+[ ]*:[[1|0]*]*;[\\s]*]*"); // latest REGEX
+		regexs.add("[[\\s]*[ ]*[A|B|a|b][A|B|a|b]*[ ]*:[ |1|0]+;[\\s]*]+"); // latest REGEX
+		regexs.add("((\\s)*( )*[A-Za-z]+( )*:( |1|0)+;(\\s)*)+"); // latest REGEX
+		// X: A B C ;
+			// also changed the * to a + for fist bit to ensure at least 1 is present
+			// just allow for multiple lines, add []* over everything
+		// TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 		
 	};
 	

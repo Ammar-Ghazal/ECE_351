@@ -48,9 +48,11 @@ public final class TestWRegexAccept {
 	 * Now you have a fairly general regex. Copy and paste it into this static
 	 * variable and let's try to match it against all of the test wave files.
 	 */
-	final static String REGEX = "TODO"; // TODO: replace this stub
-
-
+	// final static String REGEX = ("[[\\s]*[ ]*[A-Za-z]+[ ]*:[[ ]*[1|0]*]*;[\\s]*]*"); // TODO: replace this stub
+	// final static String REGEX = ("[[\\s]*[ ]*[A-Za-z]+[ ]*:[[1|0]*]*;[\\s]*]*"); // TODO: replace this stub
+	// final static String REGEX = ("((\\s)*( )*(A-Za-z)+( )*:( |1|0)+;(\\s)*)+"); // fixed brackets [] --> ()
+	final static String REGEX = ("((\\s)*( )*[A-Za-z]+( )*:( |1|0|\\s)+;(\\s)*)+"); // latest REGEX
+								// ("((\\s)*( )*(A|B|a|b)(A|B|a|b)*( )*:( |1|0)+;(\\s)*)+"); // latest REGEX
 	
 	private final File wave;
 

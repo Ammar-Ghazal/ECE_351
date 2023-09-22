@@ -46,7 +46,55 @@ public final class WRecursiveDescentParser {
 
     public WProgram parse() {
     	// STUB: return null;
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+        // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+        // Similar to recognizer, except now build the tree, instead of returning void
+
+        // First, create instances of WProgram and Waveform
+        WProgram wprogram = new WProgram();
+        Waveform waveform = new Waveform();
+
+        // // keep reading waveform data until lexer reaches EOF
+        while(!lexer.inspectEOF()){
+            String waveformStr = "";
+
+            // Store the pin name of the waveform:
+            while (lexer.inspectID()){
+                // ******* --------- might be able to change the = to a += below
+                // waveformStr = lexer.consumeID();
+
+                // re store waveform in itself since strings are immutable type
+                waveform = waveform.rename((lexer.consumeID()).toString());
+            }
+
+            // Inspect, consume, and append : to wavefor
+            if(lexer.inspect(":")){
+                // waveform = waveform.append(lexer.consume(":"));
+                lexer.consume(":");
+            }
+
+            // Inspect and consume the bits 0 & 1, and the ; terminating the waveform
+            while(!lexer.inspect(";")){
+                if(lexer.inspect("1", "0")){
+                    waveform = waveform.append(lexer.consume("0", "1"));
+                    // lexer.consume("0", "1");
+                }else{
+                     waveform = waveform.append(lexer.consume("0", "1"));
+                    // lexer.consume("0", "1");
+                }
+            }
+            // Consume and append ";"
+            // waveform = waveform.append(lexer.consume(";"));
+            lexer.consume(";");
+
+            // Save waveform in WProgram: remember wprogram is also of type immutable list
+            wprogram = wprogram.append(waveform);
+
+            // Clear waveform variable for next waveform:
+            waveform = new Waveform();
+
+            // throw new ece351.util.Todo351Exception();
+        }
+        return wprogram;
     }
 }

@@ -125,8 +125,16 @@ public final class WProgram implements Examinable {
 	
 	@Override
 	public String toString() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// TODO: short code snippet
+		// Build the output string using waveform data
+		String output = "";
+		for (Waveform waveformData: waveforms){
+			output += waveformData.toString() + " ";
+		}
+
+		// Once output string is built, return it:
+		return output;
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	/**
@@ -135,6 +143,7 @@ throw new ece351.util.Todo351Exception();
 	@Override
 	public int hashCode() {
 		return waveforms.hashCode();
+		// hashCode() already implemented in Waveform.java
 	}
 	
 
