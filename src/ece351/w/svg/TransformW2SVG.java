@@ -110,13 +110,16 @@ public final class TransformW2SVG {
 					System.out.println(Line.toSVG(x1, y1, x2, y2));
 				}
 				
-				// Build the horizontal line:
+				// Build the horizental line:
 				int x1 = x;
 				int x2 = x + WIDTH;
 				int y1 = y_prev;
 				int y2 = y_prev;
 
-				// Create the horizontal line:
+				// Update x:
+				x = x2;
+
+				// Create the horizental line:
 				System.out.println(Line.toSVG(x1, y1, x2, y2));
 
 				// // TODO: longer code snippet
@@ -125,6 +128,7 @@ public final class TransformW2SVG {
 			
 			// advance the y position for the next pin
 			// Must update y values so everything is aligned:
+			y_pos += 3*y_off;
 			y_mid = y_pos;
 			y_prev = y_pos;
 
@@ -143,5 +147,5 @@ public final class TransformW2SVG {
 	 * between a DOM-style XML parser and a SAX-style XML parser?
 	 */
 	public static final boolean USE_DOM_XML_PARSER = true; // TODO: replace this stub
-
+			// gonna leave this herem
 }
