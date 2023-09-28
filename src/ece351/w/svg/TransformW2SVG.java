@@ -77,19 +77,63 @@ public final class TransformW2SVG {
 				// draw the vertical line
 				// draw the horizontal line
 				// get ready for the next bit
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+
+				// Check if the first bit is a 0 or a 1:
+				if(bit == "0"){
+					// Build the x1, x2, y1, and y2 values to pass to Line.toSVG:
+					// This builds the vertical line:
+					int x1 = x;
+					int x2 = x;
+					int y1 = y_prev;
+					int y2 = y_off + y_mid;
+					
+					// Update y_prev:
+					y_prev = y2;
+
+					// Create the vertical line:
+					System.out.println(Line.toSVG(x1, y1, x2, y2));
+				}else{
+					// Bit must be 1:
+					if(bit != "1") {throw new ece351.util.Todo351Exception();}
+
+					// Build the x1, x2, y1, and y2 values to pass to Line.toSVG:
+					// This builds the vertical line:
+					int x1 = x;
+					int x2 = x;
+					int y1 = y_prev;
+					int y2 = y_mid - y_off;
+					
+					// Update y_prev:
+					y_prev = y2;
+
+					// Create the vertical line:
+					System.out.println(Line.toSVG(x1, y1, x2, y2));
+				}
+				
+				// Build the horizontal line:
+				int x1 = x;
+				int x2 = x + WIDTH;
+				int y1 = y_prev;
+				int y2 = y_prev;
+
+				// Create the horizontal line:
+				System.out.println(Line.toSVG(x1, y1, x2, y2));
+
+				// // TODO: longer code snippet
+				// throw new ece351.util.Todo351Exception();
 			}
 			
 			// advance the y position for the next pin
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+			// Must update y values so everything is aligned:
+			y_mid = y_pos;
+			y_prev = y_pos;
 
+			// // TODO: short code snippet
+			// throw new ece351.util.Todo351Exception();
 		}
 
 		// footer
 		out.println("</svg>");
-		
 	}
 
 	/**
