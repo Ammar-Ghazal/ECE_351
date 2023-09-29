@@ -29,12 +29,13 @@ package ece351.w.svg;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import ece351.util.CommandLine;
 import ece351.util.Debug;
 import ece351.w.ast.WProgram;
 import ece351.w.ast.Waveform;
+import ece351.w.rdescent.WRecursiveDescentParser;
 
 public final class TransformW2SVG {
-
 	public static String transform(final WProgram wp) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter out = new PrintWriter(sw);
@@ -77,19 +78,71 @@ public final class TransformW2SVG {
 				// draw the vertical line
 				// draw the horizontal line
 				// get ready for the next bit
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
-			}
-			
-			// advance the y position for the next pin
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+				if (bit == "0"){
+					// Update first coordinates:
+					int x1 = x;
+					int y1 = y_prev;
 
+					// Update second coordinates:
+					int x2 = x;
+					int y2 = y_off + y_mid;
+
+					// Update previous y val:
+					y_prev = y2;
+
+					// Output to file:
+					out.println(Line.toSVG(x1, y1, x2, y2));
+				} else {
+					// Bit must be "1"
+					if(bit != "1"){throw new ece351.util.Todo351Exception();}
+					// - throw exception if bit is not 1
+
+					// Update first coordinates:
+					int x1 = x;
+					int y1 = y_prev;
+					
+					// Update second coordinates:
+					int x2 = x;
+					int y2 = y_mid - y_off;
+					// *** remember to take the difference with y_mid and y_off
+					
+					// Update previous y val:
+					y_prev = y2;
+					
+					// Output to file:
+					out.println(Line.toSVG(x1, y1, x2, y2));
+				}
+
+				// Update first coordinates:
+				int x1 = x;
+				int y1 = y_prev;
+
+				// Update second coordinates:
+				int x2 = x1 + WIDTH;
+				int y2 = y1;
+
+				// Update x for next waveform:
+				x = x2;
+
+				// Output last line:
+				out.println(Line.toSVG(x1, y1, x2, y2));
+
+				// // TODO: longer code snippet
+				// throw new ece351.util.Todo351Exception();
+			}
+
+			// advance the y position for the next pin
+			// Update y positions:
+			y_pos = y_pos + 3*y_off;
+			y_mid = y_pos;
+			y_prev = y_pos;
+			
+			// // TODO: short code snippet
+			// throw new ece351.util.Todo351Exception();
 		}
 
 		// footer
 		out.println("</svg>");
-		
 	}
 
 	/**

@@ -62,9 +62,51 @@ public final class TransformSVG2W {
 		final List<Line> lines = new ArrayList<Line>(pinslines.segments);
 		final List<Pin> pins = new ArrayList<Pin>(pinslines.pins);
 
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+		// Sort all lines by y value then x value:
+		Collections.sort(lines, COMPARE_Y_X);
 
+		// Use ArrayList and LinkedHashSet (for storing y values):
+		// Initialize variables: waveforms, yVals, and removedVals
+		ImmutableList<Waveform> waveforms = ImmutableList.of();
+		final Set<Integer> yVals = new LinkedHashSet<Integer>();
+		final List<Line> removedVals = new ArrayList<Line>();
+		// - yVals and removedVals so that we can keep track of values to consume, 
+		// and values that have been consumed
+		
+		// Add all lines to yVals:
+		yVals.add(lines.get(0).y1);
+
+		// Go through all lines, until we have no more lines:
+		while(!lines.isEmpty()) {
+			// Get current line from lines
+			final Line currentLine = lines.get(0);
+
+			if (yVals.contains(currentLine.y1) && !yVals.contains(currentLine.y2)){
+				// Only y1 is contained in current line:
+				removedVals.add(currentLine);
+				yVals.add(currentLine.y2);
+				lines.remove(0);
+			} else if(yVals.contains(currentLine.y1)){
+				// Both y1 and y2 are contained in current line:
+				removedVals.add(currentLine);
+				lines.remove(0);
+			} else if(yVals.contains(currentLine.y2)){
+				// Only y2 is contained in current line:
+				removedVals.add(currentLine);
+				yVals.add(currentLine.y1);
+				lines.remove(0);
+			}else{
+				// Neither y1 nor y2 are contained in current line:
+				waveforms = waveforms.append(transformLinesToWaveform(removedVals, pins));
+				pins.remove(0);
+				removedVals.clear();
+				yVals.clear();
+				yVals.add(currentLine.y1);
+			}
+		}
+
+		// Add last waveform, and return:
+		waveforms = waveforms.append(transformLinesToWaveform(removedVals, pins));
 		return new WProgram(waveforms);
 	}
 
@@ -86,8 +128,37 @@ throw new ece351.util.Todo351Exception();
 	private static Waveform transformLinesToWaveform(final List<Line> lines, final List<Pin> pins) {
 		if(lines.isEmpty()) return null;
 
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+		// Sort all lines by x values:
+		Collections.sort(lines, COMPARE_X);
+
+		// Initialize variables: start of waveform, data, list
+		final Line start = lines.get(0);
+		ImmutableList<String> data = ImmutableList.of();
+		ArrayList<String> list = new ArrayList<>();
+
+		// Iterate through all lines:
+		for(int i = 1; i <= lines.size() - 1; i++) {
+			// Get current line:
+			final Line current = lines.get(i);
+
+			// Make sure line is now different:
+			if (current.x1 != current.x2){
+				// If y level changed, send corresponding waveform value:
+				if (current.y2 < start.y1){
+					list.add("1");
+				}else{
+					list.add("0");
+				}
+			}
+		}
+
+		// To construct waveform, we need to send over the data and an ID:
+		data = ImmutableList.copyOf(list);
+		String ID = pins.get(0).id;
+		return new Waveform(data, ID);
+
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	/**
