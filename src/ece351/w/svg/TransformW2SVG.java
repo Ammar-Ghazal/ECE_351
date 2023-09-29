@@ -152,5 +152,5 @@ public final class TransformW2SVG {
 	 * between a DOM-style XML parser and a SAX-style XML parser?
 	 */
 	public static final boolean USE_DOM_XML_PARSER = true; // TODO: replace this stub
-
+			// gonna leave this herem
 }
