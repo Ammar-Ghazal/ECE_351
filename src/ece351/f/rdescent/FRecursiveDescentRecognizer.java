@@ -123,7 +123,9 @@ public final class FRecursiveDescentRecognizer implements Constants {
 
 	void var() { 
         // Var → id
-        lexer.consumeID();
+        if (lexer.inspectID()){ // must check for ID first
+            lexer.consumeID();
+        }
         // throw new ece351.util.Todo351Exception();
      } // TODO // TODO: replace this stub
 
