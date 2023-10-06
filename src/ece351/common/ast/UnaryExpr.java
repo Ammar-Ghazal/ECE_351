@@ -79,7 +79,7 @@ public abstract class UnaryExpr extends Expr {
 
 	@Override
 	public final String toString() {
-		String rtn = expr.toString(); // might need to make this prettier !note
+		String rtn = this.operator() + " " + expr.toString(); // might need to make this prettier, fixed missing values
 		return rtn;
 		// // TODO: short code snippet
 		// throw new ece351.util.Todo351Exception();
