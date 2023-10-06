@@ -127,8 +127,19 @@ public final class FProgram implements Examinable {
     public String toString() {
 		if (formulas == null || formulas.isEmpty()) return "";
 		final String sep = System.getProperty("line.separator");
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+
+		// Accumalated string variable to be returned:
+		String rtn = "";
+
+		// Use sep to build separations:
+		// Iterator<AssignmentStatement> itr = formulas.iterator(); // breaks code :(
+		for (AssignmentStatement currentFormula : formulas){
+			rtn += currentFormula.toString() + sep;
+		}
+
+		return rtn;
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
     }
     
 	@Override
@@ -139,9 +150,11 @@ throw new ece351.util.Todo351Exception();
 		final FProgram that = (FProgram) obj;
 		
 		// compare field values using Examiner.orderedExamination()
-		// no significant differences found, return true
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		return Examiner.orderedExamination(Examiner.Equals, formulas, that.formulas);
+		
+		// no significant differences found, return true - NOTE: orderedExamination already does this
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 	
 	@Override
@@ -152,9 +165,11 @@ throw new ece351.util.Todo351Exception();
 		final FProgram that = (FProgram) obj;
 		
 		// compare field values using Examiner.unorderedExamination()
-		// no significant differences found, return true
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		return Examiner.unorderedExamination(Examiner.Isomorphic, formulas, that.formulas);
+		// no significant differences found, return true - NOTE: unorderedExamination already does this
+
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	/**

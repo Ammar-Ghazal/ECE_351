@@ -68,9 +68,10 @@ public final class VarExpr extends Expr {
 		if (obj == null) return false;
 		if (!getClass().equals(obj.getClass())) return false;
 		final VarExpr that = (VarExpr) obj;
-		// compare field values
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// compare field values - return identifier.equals
+		return that.identifier.equals(identifier);
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	@Override

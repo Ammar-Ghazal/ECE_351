@@ -62,9 +62,18 @@ public final class ConstantExpr extends Expr {
 		return true;
 	}
 
-	public String toString() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+	public String toString() { // return string depending on b
+		// return string of '0' or '1', depending on b
+		String rtn = "";
+		if (b == false){
+			rtn =  "'0'";
+		} else {
+			rtn =  "'1'";
+		}
+
+		return rtn;
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	public Expr accept(final ExprVisitor v){
@@ -82,15 +91,18 @@ throw new ece351.util.Todo351Exception();
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(final Object obj) { // use that object to determine value of b
 		// basics
 		if (obj == null) return false;
 		if (!obj.getClass().equals(this.getClass())) return false;
 		final ConstantExpr that = (ConstantExpr) obj;
 
+		// sub class of another equals method, check if b is equal to passed b
+		return (that.b).equals(b);
+
 		// compare field values
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	@Override

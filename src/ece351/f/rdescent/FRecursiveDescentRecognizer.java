@@ -67,13 +67,69 @@ public final class FRecursiveDescentRecognizer implements Constants {
         lexer.consume(";");
     }
     
-    // Implement these four:
-    void expr() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-    void term() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-	void factor() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-	void var() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-	void constant() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
+    // Implement the below 5 functions based on grammar in figure 3.1:
+    void expr() { 
+        // Expr → Term (‘or’ Term)*
+        term();
+        while (lexer.inspect(OR)){ // while loop since there is a *
+            // after finding OR, consume it
+            lexer.consume(OR);
+            term();
+        }
+        // throw new ece351.util.Todo351Exception();
+     } // TODO // TODO: replace this stub
 
+    void term() { 
+        //Term → Factor (‘and’ Factor)*
+        factor();
+        while (lexer.inspect(AND)){ // while loop since there is a *
+            // after finding AND, consume it
+            lexer.consume(AND);
+            factor();
+        }
+        // throw new ece351.util.Todo351Exception();
+     } // TODO // TODO: replace this stub
+
+	void factor() { 
+        // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+        if (lexer.inspect(NOT)){
+            // after finding NOT, consume it
+            lexer.consume(NOT);
+            factor();
+        } else if (lexer.inspect("(")){
+            lexer.consume("(");
+            expr();
+            if(lexer.inspect(")")){lexer.consume(")");}; // check again for peace of mind
+        } else { // not sure about this since there is | btw Var and Constant
+            var();
+            constant();
+        }
+        // throw new ece351.util.Todo351Exception();
+     } // TODO // TODO: replace this stub
+    
+     void constant() { // remember to check for '' single quotes!
+        // Constant → ‘‘0’’ | ‘‘1’’
+        if (lexer.inspect("'")){
+            lexer.consume("'");
+            if (lexer.inspect("0")){
+                lexer.consume("0");
+            } else if (lexer.inspect("1")){
+                lexer.consume("1");
+            }
+            lexer.consume("'");
+        }
+        // throw new ece351.util.Todo351Exception();
+     } // TODO // TODO: replace this stub
+
+	void var() { 
+        // Var → id
+        if (lexer.inspectID()){ // must check for ID first
+            lexer.consumeID();
+        }
+        // throw new ece351.util.Todo351Exception();
+     } // TODO // TODO: replace this stub
+
+	
 
     // helper functions
     private boolean peekConstant() {

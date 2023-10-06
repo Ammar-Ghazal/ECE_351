@@ -89,11 +89,107 @@ public final class FRecursiveDescentParser implements Constants {
         return new AssignmentStatement(var, expr);
     }
     
-    Expr expr() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-    Expr term() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-    Expr factor() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-    VarExpr var() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
-    ConstantExpr constant() { throw new ece351.util.Todo351Exception(); } // TODO // TODO: replace this stub
+    // Implement the below 5 functions based on grammar in figure 3.1:
+    Expr expr() { 
+        // Expr → Term (‘or’ Term)*
+        Expr rtnVal = term();
+        while (lexer.inspect(OR)){ // while loop since there is a *
+            // after finding OR, consume it
+            lexer.consume(OR);
+            Expr parsedTerm = term();
+            rtnVal = new OrExpr(rtnVal, parsedTerm);
+        }
+        // throw new ece351.util.Todo351Exception();
+        return rtnVal;
+    } // TODO // TODO: replace this stub
+
+    Expr term() { 
+        //Term → Factor (‘and’ Factor)*
+        Expr rtnVal = factor();
+        while (lexer.inspect(AND)){ // while loop since there is a *
+            // after finding AND, consume it
+            lexer.consume(AND);
+            Expr parsedTerm = factor();
+            rtnVal = new AndExpr(rtnVal, parsedTerm);
+        }
+        // throw new ece351.util.Todo351Exception();
+        return rtnVal;
+    } // TODO // TODO: replace this stub
+
+    Expr factor() { 
+        // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+        Expr rtnVal;
+        if (lexer.inspect(NOT)){
+            // after finding NOT, consume it
+            lexer.consume(NOT);
+            Expr parsedVal = factor();
+            rtnVal = new NotExpr(parsedVal);
+            return rtnVal;
+        } else if (lexer.inspect("(")){
+            lexer.consume("(");
+            rtnVal = expr();
+            if(lexer.inspect(")")){lexer.consume(")");}; // check again for peace of mind
+            return rtnVal;
+        } else { // not sure about this since there is | btw Var and Constant
+            // Distinguish Var from Constant by using checked for "'" string
+            if(lexer.inspect("'")){
+                rtnVal = constant();
+                return rtnVal;
+            }else{
+                rtnVal = var();
+                return rtnVal;
+            }
+        }
+    // throw new ece351.util.Todo351Exception();
+    } // TODO // TODO: replace this stub
+    
+    ConstantExpr constant() { // remember to check for '' single quotes!
+        // Constant → ‘‘0’’ | ‘‘1’’
+        if (lexer.inspect("'")){
+            lexer.consume("'");
+            if (lexer.inspect("0")){
+                lexer.consume("0");
+                lexer.consume("'");
+                return ConstantExpr.FalseExpr;
+            } else{
+                lexer.consume("1");
+                lexer.consume("'");
+                return ConstantExpr.TrueExpr;
+            }
+        }else{
+            return ConstantExpr.FalseExpr;
+        }
+    // throw new ece351.util.Todo351Exception();
+    } // TODO // TODO: replace this stub
+
+
+    // ConstantExpr constant() { 
+    // 	String input = "";
+    // 	if(lexer.inspect("'")){
+    //         lexer.consume("'");
+    //     }
+	// 	if(lexer.inspect("0","1")){
+    // 		input = lexer.consume("1","0");
+    // 		lexer.consume("'");
+    		
+    // 	}
+	// 	if (input == "1"){
+	// 		return ConstantExpr.TrueExpr;
+	// 	}
+	// 	else{
+	// 		return ConstantExpr.FalseExpr;
+	// 	}
+    // } // TODO // TODO: replace this stub
+
+    VarExpr var() { 
+        // Var → id
+        String rtnString = "";
+        while(lexer.inspectID()){ // must check for ID first
+            rtnString += lexer.consumeID(); // Build the returned string
+        }
+        return new VarExpr(rtnString);
+    // throw new ece351.util.Todo351Exception();
+    } // TODO // TODO: replace this stub
 
     // helper functions
     private boolean peekConstant() {
