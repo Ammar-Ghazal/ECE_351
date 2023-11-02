@@ -173,18 +173,31 @@ public abstract class NaryExpr extends Expr {
 	}
 	
 	private boolean examine(final Examiner e, final Examinable obj) {
-		// basics
+		// basics - don't modify
 		if (obj == null) return false;
 		if (!this.getClass().equals(obj.getClass())) return false;
 		final NaryExpr that = (NaryExpr) obj;
 		
 		// if the number of children are different, consider them not equivalent
+		if(this.children.size() != that.children.size()){
+			return false;
+		}
+
 		// since the n-ary expressions have the same number of children and they are sorted, just iterate and check
-		// supposed to be sorted, but might not be (because repOk might not pass)
-		// if they are not the same elements in the same order return false
+		// iterate through all children:
+		for (int k = 0; k <= this.children.size() - 1; k++){
+			// check if each child is the same, if they are not, return false
+			if(!(this.children.get(k).equals(that.children.get(k)))){
+				// supposed to be sorted, but might not be (because repOk might not pass)
+				// if they are not the same elements in the same order return false
+				return false;
+			}
+		}
+
 		// no significant differences found, return true
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+		return true;
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
 	}
 
 	
@@ -212,19 +225,56 @@ throw new ece351.util.Todo351Exception();
 		// note: we do not assert repOk() here because the rep might not be ok
 		// the result might contain duplicate children, and the children
 		// might be out of order
-		return this; // TODO: replace this stub
+
+		// create array to store new Expr types with simplified children:
+		ArrayList<Expr> simplifiedChildren = new ArrayList<>();
+
+		// iterate through all children, simplify them and add them to simplifiedChildren:
+		for (int k = 0; k <= this.children.szie() - 1; k++){
+			Expr simpleChild = this.children.get(k).simplify();
+			simplifiedChildren.add(simpleChild);
+		}
+
+		// return the simplified children, use newNaryExpr to match return type of NaryExpr:
+		return newNaryExpr(simplifiedChildren);
+
+		// return this; // TODO: replace this stub
 	}
 
 	
 	private NaryExpr mergeGrandchildren() {
 		// extract children to merge using filter (because they are the same type as us)
-			// if no children to merge, then return this (i.e., no change)
-			// use filter to get the other children, which will be kept in the result unchanged
-			// merge in the grandchildren
-			// assert result.repOk():  this operation should always leave the AST in a legal state
-		return this; // TODO: replace this stub
-	}
+		// if no children to merge, then return this (i.e., no change)
+		if(this.children.isEmpty()){
+			return this;
+		}
 
+		// use filter to get the other children, which will be kept in the result unchanged
+		NaryExpr filteredChildren = filter(this.getClass(), true);
+			// - this removes children that are of different type/class than the current expression
+		ArrayList<Expr> copyChildren = new ArrayList<Expr>(this.children);
+
+		// Before iterating, check if any children are left, if not, return as is
+		if(filteredChildren.children.isEmpty()){
+			return this;
+		}
+
+		// merge in the grandchildren
+		// iterate through all children, remove them and add the grandchildren
+		for (int k = 0; i <= filteredChildren.size(); k++){
+			// get the kth child's children (grandchildren):
+			NaryExpr child_k = (NaryExpr) filteredChildren.children.get(k);
+
+			// remove the children and add the grandchildren:
+			copyChildren.remove(child_k);
+			copyChildren.addAll(child_k.children);
+		}
+
+		NaryExpr grandchildren = newNaryExpr(copyChildren);
+		assert grandchildren.repOk(); //this operation should always leave the AST in a legal state
+		return grandchildren;
+		// return this; // TODO: replace this stub
+	}
 
     private NaryExpr foldIdentityElements() {
     	// if we have only one child stop now and return self
