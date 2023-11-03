@@ -242,7 +242,7 @@ public abstract class NaryExpr extends Expr {
 	}
 
 	
-	private NaryExpr mergeGrandchildren() {
+	private NaryExpr mergeGrandchildren() { // -- DEBUG
 		// extract children to merge using filter (because they are the same type as us)
 		// if no children to merge, then return this (i.e., no change)
 		if(this.children.isEmpty()){
@@ -261,7 +261,7 @@ public abstract class NaryExpr extends Expr {
 
 		// merge in the grandchildren
 		// iterate through all children, remove them and add the grandchildren
-		for (int k = 0; k <= filteredChildren.children.size(); k++){
+		for (int k = 0; k <= filteredChildren.children.size() - 1; k++){
 			// get the kth child's children (grandchildren):
 			NaryExpr child_k = (NaryExpr) filteredChildren.children.get(k);
 
@@ -276,7 +276,7 @@ public abstract class NaryExpr extends Expr {
 		// return this; // TODO: replace this stub
 	}
 
-    private NaryExpr foldIdentityElements() {
+    private NaryExpr foldIdentityElements() { // -- DEBUG
     	// if we have only one child stop now and return self
 		if(this.children.size() == 1){
 			// we have multiple children, remove the identity elements
@@ -335,10 +335,11 @@ public abstract class NaryExpr extends Expr {
 		for(int k = 0; k <= filteredList.children.size() - 1; k++){
 			// for each negation, see if we find its complement
 			NotExpr currTerm = (NotExpr) filteredList.children.get(k);
+			Expr tempVal = currTerm.expr;
 			
 			// found matching negation and its complement
 			// - might have to separate the currTerm.expr into its own separate line
-			if(this.contains(currTerm.expr, Examiner.Equals)){
+			if(this.contains(tempVal, Examiner.Equals)){
 				ArrayList<Expr> tempList = new ArrayList<>();
 				tempList.add(this.getAbsorbingElement());
 				NaryExpr returnVal = newNaryExpr(tempList);
