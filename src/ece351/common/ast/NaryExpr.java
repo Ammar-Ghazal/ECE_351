@@ -279,6 +279,9 @@ public abstract class NaryExpr extends Expr {
     private NaryExpr foldIdentityElements() { // -- DEBUG
     	// if we have only one child stop now and return self
 		if(this.children.size() == 1){
+			return this; // TODO: replace this stub -- this part seems fine
+			// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
+		}else{
 			// we have multiple children, remove the identity elements
     		// all children were identity elements, so now our working list is empty
     		// return a new list with a single identity element
@@ -297,9 +300,6 @@ public abstract class NaryExpr extends Expr {
 				// if it is empty, add the removed identity element
 				return returnList.append(this.getIdentityElement());
 			}
-		}else{
-			return this; // TODO: replace this stub -- this part seems fine
-			// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
 		}
     }
 
