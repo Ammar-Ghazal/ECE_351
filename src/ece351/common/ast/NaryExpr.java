@@ -230,7 +230,7 @@ public abstract class NaryExpr extends Expr {
 		ArrayList<Expr> simplifiedChildren = new ArrayList<>();
 
 		// iterate through all children, simplify them and add them to simplifiedChildren:
-		for (int k = 0; k <= this.children.szie() - 1; k++){
+		for (int k = 0; k <= this.children.size() - 1; k++){
 			Expr simpleChild = this.children.get(k).simplify();
 			simplifiedChildren.add(simpleChild);
 		}
@@ -261,7 +261,7 @@ public abstract class NaryExpr extends Expr {
 
 		// merge in the grandchildren
 		// iterate through all children, remove them and add the grandchildren
-		for (int k = 0; i <= filteredChildren.size(); k++){
+		for (int k = 0; k <= filteredChildren.children.size(); k++){
 			// get the kth child's children (grandchildren):
 			NaryExpr child_k = (NaryExpr) filteredChildren.children.get(k);
 
@@ -278,41 +278,104 @@ public abstract class NaryExpr extends Expr {
 
     private NaryExpr foldIdentityElements() {
     	// if we have only one child stop now and return self
-    	// we have multiple children, remove the identity elements
+		if(this.children.size() == 1){
+			// we have multiple children, remove the identity elements
     		// all children were identity elements, so now our working list is empty
     		// return a new list with a single identity element
-    		// normal return
-		return this; // TODO: replace this stub
-    	// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
+
+			// first, create the list to return:
+			ArrayList<Expr> tempList = new ArrayList<>();
+			tempList.add(this.getIdentityElement());
+
+			// remove the identity elements:
+			NaryExpr returnList = removeAll(tempList, Examiner.Equals);
+
+			if(!returnList.children.isEmpty()){
+				// normal return
+				return returnList;
+			}else{
+				// if it is empty, add the removed identity element
+				return returnList.append(this.getIdentityElement());
+			}
+		}else{
+			return this; // TODO: replace this stub -- this part seems fine
+			// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
+		}
     }
 
     private NaryExpr foldAbsorbingElements() {
 		// absorbing element: 0.x=0 and 1+x=1
 			// absorbing element is present: return it
 			// not so fast! what is the return type of this method? why does it have to be that way?
+
+		// check if absorbing element is present:
+		if(contains(this.getAbsorbingElement(), Examiner.Equals)){
+			ArrayList<Expr> tempList = new ArrayList<>();
+			tempList.add(this.getAbsorbingElement());
+			NaryExpr returnList = newNaryExpr(tempList);
+			return returnList;
+		}else{
 			// no absorbing element present, do nothing
-		return this; // TODO: replace this stub
-    	// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
+			return this; // TODO: replace this stub
+			// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
+		}
 	}
 
 	private NaryExpr foldComplements() {
 		// collapse complements
 		// !x . x . ... = 0 and !x + x + ... = 1
 		// x op !x = absorbing element
+
+		//Initialize:
+		NotExpr notExprTerm = new NotExpr();
+		// - for detecting ! terms
+		NaryExpr filteredList = this.filter(notExprTerm.getClass(), true);
+
 		// find all negations
-		// for each negation, see if we find its complement
-				// found matching negation and its complement
-				// return absorbing element
-		// no complements to fold
-		return this; // TODO: replace this stub
+		for(int k = 0; k <= filteredList.children.size() - 1; k++){
+			// for each negation, see if we find its complement
+			NotExpr currTerm = (NotExpr) filteredList.children.get(k);
+			
+			// found matching negation and its complement
+			// - might have to separate the currTerm.expr into its own separate line
+			if(this.contains(currTerm.expr, Examiner.Equals)){
+				ArrayList<Expr> tempList = new ArrayList<>();
+				tempList.add(this.getAbsorbingElement());
+				NaryExpr returnVal = newNaryExpr(tempList);
+				return returnVal;
+			}
+			// return absorbing element
+			// no complements to fold
+
+		}
+		return this; // TODO: replace this stub -- leave this for now
     	// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
 	}
 
 	private NaryExpr removeDuplicates() {
 		// remove duplicate children: x.x=x and x+x=x
 		// since children are sorted this is fairly easy
-			// no changes
-			// removed some duplicates
+
+		for(int k = 0; k<= this.children.size() - 2; k++){
+			// store the initial child, assume it is unique and check to see if there are multiple instances of it
+			Expr child_k = this.children.get(k);
+			for(int j = k + 1; j <= this.children.size() - 1; j++){
+				Expr child_j = this.children.get(j);
+				if(child_k.equals(child_j)){
+					ArrayList<Expr> tempList = new ArrayList<>();
+					tempList.add(child_k);
+
+					// Removing ALL instances of the duplicate found:
+					NaryExpr returnList = removeAll(tempList, Examiner.Equals);
+
+					// Before returning, add at least one instance of the duplicate:
+					return returnList.append(child_k);
+					// removed some duplicates
+				}
+			}
+		}
+
+		// no changes, no duplicates found, return as is:
 		return this; // TODO: replace this stub
     	// do not assert repOk(): this fold might leave the AST in an illegal state (with only one child)
 	}
@@ -320,6 +383,32 @@ public abstract class NaryExpr extends Expr {
 	private NaryExpr simpleAbsorption() {
 		// (x.y) + x ... = x ...
 		// check if there are any conjunctions that can be removed
+
+		// Initialize variables:
+		NaryExpr filteredListTrue = this.filter(this.getThatClass(), true);
+		NaryExpr filteredListFalse = this.filter(this.getThatClass(), false);
+		ArrayList<NaryExpr> conjunctions = new ArrayList<>();
+		// - to store the conjunctions we want to remove
+
+		// First, iterate through filteredListTrue and populate conjunctions list
+		for(Expr child : filteredListTrue.children){ // trying new notation for more readable code // debug later
+			conjunctions.add((NaryExpr) child);
+		}
+
+		// Then, check for conjunctions that are removable
+		for(NaryExpr conjunction: conjunctions){
+			for(Expr conjunctionChild : conjunction.children){
+				for(Expr filteredChild : filteredListFalse.children){
+					if(filteredChild.equals(conjunctionChild)){
+						// Confirmed that the conjunction should be removed
+						ArrayList<Expr> returnVal = new ArrayList<>();
+						returnVal.add(conjunction);
+						return this.removeAll(returnVal, Examiner.Equals); // debug this
+					}
+				}
+			}
+		}
+
 		return this; // TODO: replace this stub
     	// do not assert repOk(): this operation might leave the AST in an illegal state (with only one child)
 	}
@@ -327,8 +416,47 @@ public abstract class NaryExpr extends Expr {
 	private NaryExpr subsetAbsorption() {
 		// check if there are any conjunctions that are supersets of others
 		// e.g., ( a . b . c ) + ( a . b ) = a . b
-		return this; // TODO: replace this stub
+
+		// Initialize variables:
+		NaryExpr filteredList = this.filter(this.getThatClass(), true);
+		ArrayList<NaryExpr> tempList = new ArrayList<>();
+		ArrayList<Expr> subsetsToRemove = new ArrayList<>();
+		// - to store the subsets we want to remove
+
+		// Populate tempList 
+		for(Expr child : filteredList.children){ // same for loop setup as in simpleAbsorption
+			NaryExpr currExp = (NaryExpr) child;
+			tempList.add(currExp);
+		}
+
+		// Iterate through the tempList to find subsets
+		for(NaryExpr currExp : tempList){ //fixed
+			// Keep toRemove true until we have confirmed otherwise using the below loops
+			boolean toRemove = true;
+
+			// Compare currExp to other items in tempList
+			for(NaryExpr currExp2 : tempList){
+				// We only care if currExp and currExp2 are not the same:
+				if(currExp != currExp2){
+					// Determine if toRemove should be changed to false:
+					for(Expr child : (currExp.children)){
+						if(!currExp2.contains(child, Examiner.Equals)){
+							toRemove = false;
+						}
+					}
+
+					// Remove if toRemove is still true:
+					if(toRemove){
+						subsetsToRemove.add(currExp2);
+					}
+				}
+			}
+		}
+
     	// do not assert repOk(): this operation might leave the AST in an illegal state (with only one child)
+		// Remove all marked items (in subsetsToRemove), and return:
+		return this.removeAll(subsetsToRemove, Examiner.Equals);
+		// return this; // TODO: replace this stub
 	}
 
 	/**
@@ -336,6 +464,9 @@ public abstract class NaryExpr extends Expr {
 	 */
 	private Expr singletonify() {
 		// if we have only one child, return it
+		if(this.children.size() == 1){
+			return this.children.get(0);
+		}
 		// having only one child is an illegal state for an NaryExpr
 			// multiple children; nothing to do; return self
 		return this; // TODO: replace this stub
