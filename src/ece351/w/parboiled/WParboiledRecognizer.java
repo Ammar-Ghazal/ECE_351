@@ -25,6 +25,7 @@
  * ********************************************************************/
 
 package ece351.w.parboiled;
+// import org.apache.tools.ant.types.resources.First; // causes illegal import error?
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
 import org.parboiled.common.FileUtils;
@@ -32,6 +33,8 @@ import org.parboiled.common.FileUtils;
 import ece351.util.BaseParser351;
 import ece351.w.ast.WProgram;
 import java.lang.invoke.MethodHandles;
+
+// import javax.sound.midi.Sequence; // causes illegal import error?
 
 
 @BuildParseTree
@@ -75,17 +78,21 @@ public /*final*/ class WParboiledRecognizer extends BaseParser351 {
 	 * By convention we name the top production in the grammar "Program".
 	 */
 	@Override
-	public Rule Program() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+	public Rule Program() { // Diff than Program() in WRecursiveDescentRecognizer, must return type Rule
+        return Sequence(OneOrMore(Waveform()), EOI);
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
 	}
     
 	/**
 	 * Each line of the input W file represents a "pin" in the circuit.
 	 */
     public Rule Waveform() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        // Here, we need to have the equivalent of inspecting & consuming of ":" and ";" inside of a while loop
+        return Sequence(W0(), Name(), W0(), ":", W0(), BitString(), W0(), ";", W0());
+        // - pass the W0() for whitespace, name for the "pin name", and BitString for the bit values
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
     /**
@@ -93,8 +100,9 @@ throw new ece351.util.Todo351Exception();
      * that statement represents.
      */
     public Rule Name() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return Sequence(W0(), Letter(), ZeroOrMore(Letter()));
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
     /**
@@ -102,25 +110,31 @@ throw new ece351.util.Todo351Exception();
      * Recall that PEGs incorporate lexing into the parser.
      */
     public Rule Letter() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return FirstOf(CharRange('A', 'Z'), CharRange('a', 'z'));
+            // -- fixed
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
     /**
      * A BitString is the sequence of values for a pin.
      */
     public Rule BitString() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return Sequence(W0(), OneOrMore(Bit()), W0(), ZeroOrMore(Bit(), W0()));
+            // return at least one bit, with any whitespace, and optionally, more bits/whitespace
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
     
     /**
      * A BitString is composed of a sequence of Bits. 
      * Recall that PEGs incorporate lexing into the parser.
      */
-    public Rule Bit() {       
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+    public Rule Bit() {
+        return FirstOf('0', '1');
+            // the bit is either 0 or 1
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
 }
