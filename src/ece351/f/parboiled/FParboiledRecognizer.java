@@ -58,8 +58,148 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(OneOrMore(Formula()), EOI);
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
 	}
 
+    public Rule Formula() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(W0(), Variable(), W0(), "<=", W0(), Expression(), W0(), ";", W0());
+            // this has the exact same structure as Waveform() in WParboiledRecognizer.java
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+    
+    public Rule Expression() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(W0(), Term(), ZeroOrMore(Sequence(W0(), "or", W0(), Term(), W0())));
+            // there must be another Sequence() thing inside ZeroOrMore, since we have all of (‘or’ Term) under the *
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+
+    public Rule Term() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(W0(), Factor(), ZeroOrMore(Sequence(W0(), "and", W0(), Factor(), W0())));
+            // there must be another Sequence() thing inside ZeroOrMore, since we have all of (‘and’ Term) under the *
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+
+    public Rule Factor() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(W0(), FirstOf(Sequence(W0(), "not", W0(), Factor(), W0()),
+                                      Sequence(W0(), "(", W0(), Expression(), W0(),")", W0()),
+                                      Variable(),
+                                      Constant()),
+                                      W0());
+            // for factor, we have one of the following:
+                // ‘not’ Factor
+                // ‘(’ Expr ‘)’
+                // Var
+                // Constant
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+
+    public Rule Constant() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        // return Sequence(W0(), FirstOf("'0'", "'1'"), W0());
+        return FirstOf("'0'", "'1'");
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+
+    public Rule Variable() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return Sequence(W0(), ID(), W0());
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
+
+    public Rule ID() {
+		// STUB: return NOTHING; // TODO: replace this stub
+		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
+		// in the rule, 'Keyword'
+        // Follow grammar from manual:
+            // Program → Formula+ $$
+            // Fomula → Var ‘<=’ Expr ‘;’
+            // Expr → Term (‘or’ Term)*
+            // Term → Factor (‘and’ Factor)*
+            // Factor → ‘not’ Factor | ‘(’ Expr ‘)’ | Var | Constant
+            // Constant → ‘‘0’’ | ‘‘1’’
+            // Var → id
+        return FirstOf(CharRange('A', 'Z'), CharRange('a', 'z'));
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+	}
 }
