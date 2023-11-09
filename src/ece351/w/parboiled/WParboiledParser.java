@@ -73,24 +73,41 @@ public /*final*/ class WParboiledParser extends BaseParser351 {
 	 */
 	@Override
     public Rule Program() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        // Initialize a struct to hold the waveforms
+        WProgram emptyListWaveforms = new WProgram();
+        // In the return Rule, specify that we are expecting at least one waveform
+        return Sequence(push(emptyListWaveforms), OneOrMore(Waveform()), EOI);
+            // same as in the recognizer, but with the list of waveforms
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
 	/**
 	 * Each line of the input W file represents a "pin" in the circuit.
 	 */
     public Rule Waveform() {
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+        // return Sequence(W0(), Name(), push(match()), push(new Waveform ((String)pop())), W0(), ":",
+        // W0(), BitString(), W0(), ";", W0(), push(((WProgram)pop()).append((Waveform)pop())));
+    
+        return Sequence(W0(), Name(), push(match()), push(new Waveform ((String)pop())), W0(), ":",
+        W0(), BitString(), W0(), ";", W0(), swap(), push(((WProgram)pop()).append((Waveform)pop())));
+        // same as the recognizer with these added changes:
+            // push match is for saving the matched pin name
+            // push new waveform saves a new waveform object, the pop is to put the name we just saved onto the waveform
+            // then save WProgram, and add to it the waveform we saved earlier
+            // unsure about swap() -- fixed
+        // // TODO: longer code snippet
+        // throw new ece351.util.Todo351Exception();
+        // push(((WProgram)pop()).append((Waveform)pop()));
     }
 
     /**
      * The first token on each line is the name of the pin that line represents.
      */
     public Rule Name() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return Sequence(W0(), Letter(), ZeroOrMore(Letter()));
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
     
     /**
@@ -98,25 +115,30 @@ throw new ece351.util.Todo351Exception();
      * Recall that PEGs incorporate lexing into the parser.
      */
     public Rule Letter() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return FirstOf(CharRange('A', 'Z'), CharRange('a', 'z'));
+        // same as recognizer
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
     /**
      * A BitString is the sequence of values for a pin.
      */
     public Rule BitString() {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+        return Sequence(W0(), OneOrMore(Bit()), W0(), ZeroOrMore(Bit(), W0()));
+        // same as recognizer
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
     
     /**
      * A BitString is composed of a sequence of Bits. 
      * Recall that PEGs incorporate lexing into the parser.
      */
-    public Rule Bit() {   
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
+    public Rule Bit() {
+        return Sequence(FirstOf('0', '1'), push(match()), swap(), push(((Waveform)pop()).append((String)pop())));
+        // // TODO: short code snippet
+        // throw new ece351.util.Todo351Exception();
     }
 
 }
