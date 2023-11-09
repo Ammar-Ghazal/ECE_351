@@ -55,7 +55,7 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 
 	@Override
 	public Rule Program() {
-		// STUB: return NOTHING; // TODO: replace this stub
+		// STUB: return NOTHING; // TODO: replace this stub ?
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -72,7 +72,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule Formula() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -90,7 +89,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
     
     public Rule Expression() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -108,7 +106,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule Term() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -126,7 +123,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule Factor() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -152,7 +148,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule Constant() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -170,7 +165,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule Variable() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
@@ -187,7 +181,6 @@ public /*final*/ class FParboiledRecognizer extends FBase implements Constants {
 	}
 
     public Rule ID() {
-		// STUB: return NOTHING; // TODO: replace this stub
 		// For the grammar production Id, ensure that the Id does not match any of the keywords specified
 		// in the rule, 'Keyword'
         // Follow grammar from manual:
