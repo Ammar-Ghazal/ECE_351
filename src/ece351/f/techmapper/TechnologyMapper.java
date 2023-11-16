@@ -122,18 +122,78 @@ public final class TechnologyMapper extends PostOrderExprVisitor {
 	public void render(final FProgram program, final Examiner examiner) {
 		header(out);
 		
-		// build a set of all of the exprs in the program
-		// build substitutions by determining equivalences of exprs
+		// build a set of all of the exprs in the program - use identity hash set
+		IdentityHashSet <Expr> exprSet = ExtractAllExprs.allExprs(program);
+
+		// build substitutions by determining equivalences of exprs - use property of isomorphism to locate areas with possible substitutions
+		Object[] exprArray = exprSet.toArray(); // turn the hash set to an array
+		// Iterate through the array of expressions:
+		for(int outerIndex = 0; outerIndex <= exprArray.length - 1; outerIndex++){
+			// Now, store the current expression:
+			Expr outerExpr = (Expr) exprArray[outerIndex];
+			// Expr outerExpr = exprArray[outerIndex];
+			
+			// Now iterate through the rest of the expressions to see if there exists a similar expression:
+			// for(int innerIndex = 0; innerIndex <= exprArray.length - 1; innerIndex++)
+			for(int innerIndex = outerIndex; innerIndex <= exprArray.length - 1; innerIndex++){ // avoid going through expressions twice
+				Expr innerExpr = (Expr) exprArray[innerIndex];
+				if(outerExpr.isomorphic(innerExpr)){ // check if the inner & outer expressions are isomorphic
+					if(!substitutions.containsKey((innerExpr))){
+						substitutions.put((Expr)exprArray[innerIndex], outerExpr); // safer implementation
+						// substitutions.put(innerExpr, outerExpr); might cause issues
+					}
+				}
+			}
+		}
+		
 		// create nodes for output vars
+		// for (final AssignmentStatement f : p.formulas) { // sample code from manual
+		// 	allExprs.add(f.outputVar);
+		// 	allExprs.addAll(ExtractAllExprs.allExprs(f));
+		// }
+		for (AssignmentStatement f : program.formulas) { // sample code from manual, remove final
+			visitVar(f.outputVar);
+		}
+		
 		// attach images to gates
 		// ../../gates/not_noleads.png
 		// ../../gates/or_noleads.png
 		// ../../gates/and_noleads.png
-		// compute edges
+		// node(e2.serialNumber(), e2.toString()); // from visitVar()
+		// for(Expr currExpr: exprArray){
+		for(Expr currExpr: exprSet){ //fixed
+			if(currExpr instanceof NotExpr){ // not buggy anymore?
+				Expr currExprSub = substitutions.get(currExpr);
+				node(currExprSub.serialNumber(), currExprSub.toString(), "../../gates/not_noleads.png");
+			} else if(currExpr instanceof NaryOrExpr){
+				Expr currExprSub = substitutions.get(currExpr);
+				node(currExprSub.serialNumber(), currExprSub.toString(), "../../gates/or_noleads.png");
+			} else if(currExpr instanceof NaryAndExpr){
+				Expr currExprSub = substitutions.get(currExpr);
+				node(currExprSub.serialNumber(), currExprSub.toString(), "../../gates/and_noleads.png");
+			}
+		}
+
+		// compute edges?
+		traverseFProgram(program);
+		for (AssignmentStatement f : program.formulas) { // sample code from manual
+			Expr currExpr = f.expr; // store the current expression
+			Expr outputExpr = f.outputVar; // store the output expression
+			edge(substitutions.get(currExpr), outputExpr); // compute the edge using the substitutions and store in outputExpr (target)
+		}
+
 		// print nodes
+		for(String str: nodes){
+			out.println((str));
+		}
+		
 		// print edges
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+		for(String edg: edges){
+			out.println((edg));
+		}
+
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
 		// print footer
 		footer(out);
 		out.flush();
@@ -187,28 +247,42 @@ throw new ece351.util.Todo351Exception();
 
 	@Override
 	public Expr visitAnd(final AndExpr e) {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-		// return e;
+		// create both left and right edges:
+		edge(e.left, e);
+		edge(e.right, e);
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		return e; // return e
 	}
 
 	@Override
-	public Expr visitOr(final OrExpr e) {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-		// return e;
+	public Expr visitOr(final OrExpr e) { //same as visitAnd
+		// create both left and right edges:
+		edge(e.left, e);
+		edge(e.right, e);
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		return e; // return e
 	}
 	
 	@Override public Expr visitNaryAnd(final NaryAndExpr e) {
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-		// return e;
+		// iterate through the expression's children, and create edges there
+		for (Expr currChild : e.children) {
+			edge(currChild, e);
+		}
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		return e; // return e
 	}
 
-	@Override public Expr visitNaryOr(final NaryOrExpr e) { 
-// TODO: short code snippet
-throw new ece351.util.Todo351Exception();
-		// return e;
+	@Override public Expr visitNaryOr(final NaryOrExpr e) { // same as visitNaryAnd
+		// iterate through the expression's children, and create edges there
+		for (Expr currChild : e.children) {
+			edge(currChild, e);
+		}
+		// // TODO: short code snippet
+		// throw new ece351.util.Todo351Exception();
+		return e; // return e
 	}
 
 
