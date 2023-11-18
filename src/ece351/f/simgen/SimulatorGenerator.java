@@ -93,8 +93,8 @@ public final class SimulatorGenerator extends ExprVisitor {
 	public void generate(final String fName, final FProgram program, final PrintWriter out) {
 		this.out = out;
 		final String cleanFName = fName.replace('-', '_');
-		
-		// header
+
+		// header - this looks exactly like the code given in manual, page 108, fill in the rest
 		println("import java.util.*;");
 		println("import ece351.w.ast.*;");
 		println("import ece351.w.parboiled.*;");
@@ -111,32 +111,135 @@ public final class SimulatorGenerator extends ExprVisitor {
 		indent();
 		println("public static void main(final String[] args) {");
 		indent();
+
 		
+		// #################### START FILL FROM MANUAL ####################
+		println("final String s = File.separator;");
+		indent();
 		println("// read the input F program");
+		// println("// read the input F program");
 		println("// write the output");
+		// println("// write the output");
 		println("// read input WProgram");
+		// println("// read input WProgram");
+		println("final CommandLine cmd = new CommandLine(args);");
+		println("final String input = cmd.readInputSpec();");
+		println("final WProgram wprogram = WParboiledParser.parse(input);");
 		println("// construct storage for output");
+		// println("// construct storage for output");
+		println("final Map<String,StringBuilder> output = new LinkedHashMap<String,StringBuilder>();");
+		// println("output.put(\"x\", new StringBuilder());"); // double check for bugs - def incorrect, reference end of generate for implementation
+		for (AssignmentStatement asmt: program.formulas){
+			// println("output.put(\"" + "x" + "\", new StringBuilder());"); // separate the string
+			// println("output.put(\"" + asmt.outputVar.toString() + "\", new StringBuilder());"); // --debug
+			println("output.put(\"" + asmt.outputVar.identifier + "\", new StringBuilder());");
+		}
 		println("// loop over each time step");
+		// println("// loop over each time step");
+		println("final int timeCount = wprogram.timeCount();");
+		println("for (int time = 0; time < timeCount; time++) {");
+		indent();
 		println("// values of input variables at this time step");
+		// println("// values of input variables at this time step");
+		// println("final boolean in_a = wprogram.valueAtTime(\"a\", time);"); -- debug
+		// println("final boolean in_b = wprogram.valueAtTime(\"b\", time);");
+		final Set<String> allInputs = DetermineInputVars.inputVars((program)); // debug if sorting needed
+		for (String inString: allInputs){
+			// println("final boolean in_" + "a" + " = wprogram.valueAtTime(\"" + "a" + "\", time);"); // separate the string
+			println("final boolean in_" + inString + " = wprogram.valueAtTime(\"" + inString + "\", time);");
+		}
 		println("// values of output variables at this time step");
+		// println("// values of output variables at this time step");
+		// println("final String out_x = x(in_a, in_b) ? \"1 \" : \"0 \";"); // needs 2 for loops
+		for (AssignmentStatement asmt: program.formulas){
+			Set<String> inputs = DetermineInputVars.inputVars(asmt);
+			StringBuilder strInputs = new StringBuilder();
+			// strInputs.append("final String out_" + asmt.outputVar.toString() + " = " + asmt.outputVar.toString() + "("); //-- debug
+			strInputs.append("final String out_" + asmt.outputVar.identifier + " = " + asmt.outputVar.identifier + "(");
+				// "in_a, in_b) ? \"1 \" : \"0 \";" // remaining string
+			// Check if empty first:
+			if(!(inputs.isEmpty())){
+				// build in_a, in_b, - remove the extra ", "
+				for(String input: inputs){
+					strInputs.append("in_" + input + ", "); // needs to be "StringBuilder"...
+				}
+				strInputs.setLength(Math.max(strInputs.length() - 2, 0));
+			}
+			// ") ? \"1 \" : \"0 \";" // remaining string
+			strInputs.append(") ? \"" + "1 \"" + " : \"" + "0 \";");
+			println(strInputs.toString());
+			// println(strInputs); // StringBuilder cannot be printed
+		}
 		println("// store outputs");
-		// end the time step loop
-		// boilerplate
+		// println("// store outputs");
+		// println("output.get(\"x\").append(out_x);"); -- debug
+		for (AssignmentStatement asmt: program.formulas){
+			// println("output.get(\"" + x + "\").append(out_" + x + ");"); // separate string
+			// println("output.get(\"" + asmt.outputVar.toString() + "\").append(out_" + asmt.outputVar.toString() + ");"); //-- debug
+			println("output.get(\"" + asmt.outputVar.identifier + "\").append(out_" + asmt.outputVar.identifier + ");"); //-- debug
+		}
+		outdent();
+		println("}");
+		// // end the time step loop
+		// // boilerplate
+		
+	
+		println("try {");
+		indent();
+		println("final File f = cmd.getOutputFile();");
+		println("f.getParentFile().mkdirs();");
+		println("final PrintWriter pw = new PrintWriter(new FileWriter(f));");
 		println("// write the input");
+		// println("// write the input");
+		println("System.out.println(wprogram.toString());");
+		println("pw.println(wprogram.toString());");
 		println("// write the output");
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
-		// end main method
+		// println("// write the output");
+		println("System.out.println(f.getAbsolutePath());");
+		println("for (final Map.Entry<String,StringBuilder> e : output.entrySet()) {");
+		indent();
+		println("System.out.println(e.getKey() + \":\" + e.getValue().toString()+ \";\");");
+		println("pw.write(e.getKey() + \":\" + e.getValue().toString()+ \";\\n\");");
+		// println("pw.write(e.getKey() + \":\" + e.getValue().toString()+ \";\\n" + "\");");
+		outdent();
+		println("}");
+		println("pw.close();");
+		outdent();
+		println("}");
+		println("catch (final IOException e) {");
+		indent();
+		println("Debug.barf(e.getMessage());");
+		outdent();
+		println("}");
+		// ##################### END FILL FROM MANUAL #####################
+
+		// // // TODO: longer code snippet
+		// // throw new ece351.util.Todo351Exception();
+		// // end main method
 		outdent();
 		println("}");
 		
 		println("// methods to compute values for output pins");
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
+		// public static boolean x(final boolean a, final boolean b) { return or(a, b) ; }
+		for (AssignmentStatement asmt: program.formulas){
+			Set<String> inputs = DetermineInputVars.inputVars(asmt);
+			// depending on if input is empty, handle cases differently
+			if(!(inputs.isEmpty())){
+				// build in_a, in_b, - remove the extra ", "
+				println(generateSignature(asmt));
+			}else{
+				println(generateCall(asmt)); // if empty, do generateCall
+			}
+			// must traverse for all statements
+			traverseAssignmentStatement(asmt); // --debug
+			// println("};"); // -- debug
+			println(";}");
+		}
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
 		// end class
 		outdent();
 		println("}");
-
 	}
 
 	@Override
@@ -211,17 +314,25 @@ throw new ece351.util.Todo351Exception();
 	}
 
 	private String generateList(final AssignmentStatement f, final boolean signature) {
+		// public static boolean x(final boolean a, final boolean b) { return or(a, b) ; } // buillding this
 		final StringBuilder b = new StringBuilder();
 		if (signature) {
 			b.append("public static boolean ");
+			// left to build: x(final boolean a, final boolean b) { return or(a, b) ; }
 		}
-		b.append(f.outputVar);
-		b.append("(");
+		b.append(f.outputVar); // add the x
+		b.append("("); // add the (
 		// loop over f's input variables
-// TODO: longer code snippet
-throw new ece351.util.Todo351Exception();
-		b.append(")");
+		Set<String> inputs = DetermineInputVars.inputVars(f); // take inputs from f
+		for(String fInput : inputs){
+			// building: "final boolean a, final boolean b, ", remove the extra ", "
+			b.append("final boolean " + fInput + ", ");
+		}
+		b.setLength(Math.max(b.length() - 2, 0)); // removing the extra ", "
+
+		// // TODO: longer code snippet
+		// throw new ece351.util.Todo351Exception();
+		b.append(") { return ");
 		return b.toString();
 	}
-
 }
