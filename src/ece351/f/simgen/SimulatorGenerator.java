@@ -316,10 +316,11 @@ public final class SimulatorGenerator extends ExprVisitor {
 	private String generateList(final AssignmentStatement f, final boolean signature) {
 		// public static boolean x(final boolean a, final boolean b) { return or(a, b) ; } // buillding this
 		final StringBuilder b = new StringBuilder();
-		if (signature) {
-			b.append("public static boolean ");
-			// left to build: x(final boolean a, final boolean b) { return or(a, b) ; }
-		}
+		// if (signature) {
+		// 	b.append("public static boolean ");
+		// 	// left to build: x(final boolean a, final boolean b) { return or(a, b) ; }
+		// }
+		b.append("public static boolean ");
 		b.append(f.outputVar); // add the x
 		b.append("("); // add the (
 		// loop over f's input variables
@@ -328,11 +329,19 @@ public final class SimulatorGenerator extends ExprVisitor {
 			// building: "final boolean a, final boolean b, ", remove the extra ", "
 			b.append("final boolean " + fInput + ", ");
 		}
-		b.setLength(Math.max(b.length() - 2, 0)); // removing the extra ", "
+		
+		// b.setLength(Math.max(b.length() - 2, 0)); // removing the extra ", ";
+		// -- debug: to pass remaining tests, b.setLength must be inside signature check, 
+			// and b.append("public static boolean") must be outside of the check? --revisit
+		if (signature) {
+			b.setLength(Math.max(b.length() - 2, 0)); // removing the extra ", ";
+		}
 
 		// // TODO: longer code snippet
 		// throw new ece351.util.Todo351Exception();
-		b.append(") { return ");
+		// b.append(") { return ");
+		b.append(") ");
+		b.append("{ return ");
 		return b.toString();
 	}
 }
