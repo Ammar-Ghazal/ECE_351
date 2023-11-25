@@ -39,6 +39,7 @@ import ece351.common.ast.OrExpr;
 import ece351.common.ast.VarExpr;
 import ece351.common.ast.XNOrExpr;
 import ece351.common.ast.XOrExpr;
+import ece351.common.visitor.PostOrderExprVisitor;
 import ece351.util.CommandLine;
 import ece351.v.ast.VProgram;
 
@@ -67,46 +68,38 @@ public final class DeSugarer extends PostOrderVVisitor {
 	@Override
 	public Expr visitXOr(final XOrExpr e) {
 		// TODO: rewrite XOR and return new expression
-		// use A XOR B = A*!B + !A*B 
-		return new OrExpr(new AndExpr(e.left, new NotExpr(e.right)), new AndExpr(new NotExpr(e.left), e.right));
-		// // TODO: short code snippet
-		// throw new ece351.util.Todo351Exception();
+// TODO: short code snippet
+throw new ece351.util.Todo351Exception();
 	}
 	
 	@Override
 	public Expr visitNAnd(final NAndExpr e) {
 		// TODO: rewrite NAND and return new expression
-		// use A NAND B = !(A*B)
-		return new NotExpr(new AndExpr(e.left, e.right));
-		// // TODO: short code snippet
-		// throw new ece351.util.Todo351Exception();
+// TODO: short code snippet
+throw new ece351.util.Todo351Exception();
 	}
 	
 	@Override
 	public Expr visitNOr(final NOrExpr e) {
 		// TODO: rewrite NOR and return new expression
-		// use A NOR B = !(A+B)
-		return new NotExpr(new OrExpr(e.left, e.right));
-		// // TODO: short code snippet
-		// throw new ece351.util.Todo351Exception();
+// TODO: short code snippet
+throw new ece351.util.Todo351Exception();
 	}
 	
 	@Override
 	public Expr visitXNOr(final XNOrExpr e) {
-		// TODO: rewrite XNOR and return new expression, already given
-		return new NotExpr(new OrExpr(new AndExpr(e.left, new NotExpr(e.right)),
-				  			new AndExpr(new NotExpr(e.left), e.right)));
-		// // TODO: short code snippet
-		// throw new ece351.util.Todo351Exception();
+		// TODO: rewrite XNOR and return new expression
+//		return new NotExpr(new OrExpr(new AndExpr(e.left, new NotExpr(e.right)),
+//				  			new AndExpr(new NotExpr(e.left), e.right)));
+// TODO: short code snippet
+throw new ece351.util.Todo351Exception();
 	}
 
 	@Override
 	public Expr visitEqual(final EqualExpr e) {
-		//TODO: equals operator has the same truth table as xnor, use same return as in visitXNOr
-		return new NotExpr(new OrExpr(new AndExpr(e.left, new NotExpr(e.right)),
-				  			new AndExpr(new NotExpr(e.left), e.right)));
-		// // TODO: short code snippet
-		// throw new ece351.util.Todo351Exception();
+		//TODO: equals operator has the same truth table as xnor
+// TODO: short code snippet
+throw new ece351.util.Todo351Exception();
 	}
 
 	// these stay the same, no desugaring
